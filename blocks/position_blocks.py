@@ -21,7 +21,7 @@ class LearnedSinusoidalPosEmb(nn.Module):
     
         """
         """ https://github.com/crowsonkb/v-diffusion-jax/blob/master/diffusion/models/danbooru_128.py#L8 """
-        super().__init__()
+        super(LearnedSinusoidalPosEmb).__init__()
         assert (dim % 2) == 0
         half_dim = dim // 2
         self.weights = nn.Parameter(torch.randn(half_dim))
