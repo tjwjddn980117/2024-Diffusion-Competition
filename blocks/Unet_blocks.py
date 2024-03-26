@@ -20,7 +20,7 @@ class Upsample(nn.Module):
         Outputs:
             x (tensor): [B, C, factor*H, factor*W]
         '''
-        super().__init__()
+        super(Upsample).__init__()
         self.factor = factor
         self.factor_squared = factor ** 2
 
@@ -74,9 +74,9 @@ class RMSNorm(nn.Module):
         It's the kind of Layer Norm. It's more efficient with calculate.
     
         Arguments:
-            dim (int): input dimension.
-            scale (bool): 
-            normalize_dim (int): the dimension that you want to normalize.
+            dim (int): input dimension. 
+            scale (bool): decide the scaling. 
+            normalize_dim (int): defualt is 2. the dimension that you want to normalize.
         
         Inputs:
            x (tensor): [B, C, H, W]
@@ -85,7 +85,7 @@ class RMSNorm(nn.Module):
             if scale=True, x (tensor): [B, C, H, W]
             if scale=False, x (tensor): [B, C, H, W]
         '''
-        super().__init__()
+        super(RMSNorm).__init__()
         self.g = nn.Parameter(torch.ones(dim)) if scale else 1
 
         self.scale = scale
