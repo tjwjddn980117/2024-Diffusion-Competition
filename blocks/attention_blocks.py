@@ -66,13 +66,17 @@ class Attention(nn.Module):
     def __init__(self, dim, heads = 4, dim_head = 32, scale = 8, dropout = 0.):
         '''
         Arguments:
-            dim (int): the number of dimension.
+            dim (int): the number of dimension. 
             heads (int): the number of heads.
             dim_head (int): the number of dimensions of each head. 
+            scale (int): parammeter of resizing attention tensor. 
+            dropout (int): parammeter of dropouts. 
         
         Inputs:
-            x (tensor): [B, dim, H, W]
-            
+            x (tensor): [B, pixel(H*W), dim]. 
+        
+        Outputs:
+            x (tensor): [B, pixel(H*W), dim]. 
         '''
         super(Attention).__init__()
         self.scale = scale
@@ -92,7 +96,9 @@ class Attention(nn.Module):
     def forward(self, x):
         x = self.norm(x)
 
+        # qkv = ([B, pixels, hidden_dim], [B, pixels, hidden_dim], [B, pixels, hidden_dim])
         qkv = self.to_qkv(x).chunk(3, dim = -1)
+        # q, k, v = [B, heads, pixels, dim_head]
         q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> b h n d', h = self.heads), qkv)
 
         q, k = map(l2norm, (q, k))
@@ -100,25 +106,36 @@ class Attention(nn.Module):
         q = q * self.q_scale
         k = k * self.k_scale
 
+        # sim = [B, heads, pixels, pixels]
         sim = einsum('b h i d, b h j d -> b h i j', q, k) * self.scale
 
         attn = sim.softmax(dim = -1)
         attn = self.attn_dropout(attn)
 
+        # out = [B, heads, pixels, dim_head]
         out = einsum('b h i j, b h j d -> b h i d', attn, v)
 
+        # out = [B, pixels, hidden_dim]
         out = rearrange(out, 'b h n d -> b n (h d)')
         return self.to_out(out)
 
 class FeedForward(nn.Module):
-    def __init__(
-        self,
-        dim,
-        cond_dim,
-        mult = 4,
-        dropout = 0.
-    ):
-        super().__init__()
+    def __init__(self, dim, cond_dim, mult = 4, dropout = 0.):
+        '''
+        Arguments:
+            dim (int): the number of dimension.
+            cond_dim (int): the number of conditional dimension. 
+            mult (int): making the 'dim_hidden' with (dim_hidden = dim * mult)
+            dropout (int): parammeter of dropouts. 
+
+        Inputs:
+            x (tensor): [B, pixel(H*W), dim]. 
+            t (tensor): [L, cond_dim]. 
+
+        Outputs:
+            x (tensor): [B, pixel(H*W), dim]. 
+        '''
+        super(FeedForward).__init__()
         self.norm = RMSNorm(dim, scale = False)
         dim_hidden = dim * mult
 
@@ -144,8 +161,10 @@ class FeedForward(nn.Module):
 
     def forward(self, x, t):
         x = self.norm(x)
+        # x = [B, pixels, dim_hidden]. 
         x = self.proj_in(x)
 
+        # scale , shift = [L, 1, dim_hidden].
         scale, shift = self.to_scale_shift(t).chunk(2, dim = -1)
         x = x * (scale + 1) + shift
 
