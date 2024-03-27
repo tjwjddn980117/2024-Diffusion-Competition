@@ -9,7 +9,7 @@ from Unet_blocks import RMSNorm
 class LinearAttention(nn.Module):
     def __init__(self, dim, heads = 4, dim_head = 32):
         '''
-        THis is the LinearAttention. 
+        This is the LinearAttention. The LinearAttention is using for down-sampling / up-sampling. 
 
         Arguments:
             dim (int): the number of dimension.
@@ -65,6 +65,7 @@ class LinearAttention(nn.Module):
 class Attention(nn.Module):
     def __init__(self, dim, heads = 4, dim_head = 32, scale = 8, dropout = 0.):
         '''
+        This is the Attention. The Attention is using for Transformer(ViT). 
         Arguments:
             dim (int): the number of dimension. 
             heads (int): the number of heads.
