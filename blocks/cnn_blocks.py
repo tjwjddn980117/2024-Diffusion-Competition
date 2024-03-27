@@ -8,7 +8,7 @@ class Block(nn.Module):
         Arguments:
             dim (int): number of dimension.
             dim_out (int): number of out dimension. 
-            groups (int): standard with grouping channels.
+            groups (int): standard with grouping channels for group normalize. 
 
         Inputs:
             x (tensor): [b, dim, h, w]
@@ -40,7 +40,7 @@ class ResnetBlock(nn.Module):
             dim (int): number of dimension.
             dim_out (int): number of out dimension. ss
             time_emb_dim (int): if time_emb_dim is exists, mlp is 'SiLU -> Linear(time_emb_dim -> dim_out*2)
-            groups (int): standard with grouping channels.
+            groups (int): standard with grouping channels for group normalize. 
 
         Inputs:
             x (tensor): [B, dim, H, W]
