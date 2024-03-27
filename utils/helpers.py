@@ -1,4 +1,6 @@
+from torch import nn
 import torch.nn.functional as F
+import torchvision
 
 # helpers
 def exists(val):
@@ -27,10 +29,10 @@ def identity(t):
 
 def is_lambda(f):
     '''
-    check the function is lambda.
+    check the function is lambda. 
     
     Inputs:
-        f ( ): function.
+        f ( ): function. 
     
     Outputs:
         
@@ -39,14 +41,15 @@ def is_lambda(f):
 
 def default(val, d):
     '''
-    choose the default function.
+    choose the default function. 
 
     Inputs:
         val ( ):
         d ( ): 
     
     Outputs:
-        val / d
+        if val exists >> return val. 
+        if val not exists >> return d. 
     '''
     if exists(val):
         return val
@@ -79,5 +82,32 @@ def append_dims(t, dims):
 def l2norm(t):
     '''
     normalized last layer.
+
+    Inputs:
+        t (tensor) input tensor.
+    
+    Outputs:
+        return F.normalize(t, dim = -1).
     '''
     return F.normalize(t, dim = -1)
+
+def init_img_transform(x):
+    '''
+    the function for pre-processing. 
+    '''
+    # 이미지를 256x256 크기로 조정
+    resize_transform = torchvision.transforms.Resize((256, 256))
+    x = resize_transform(x)
+    # 이미지 정규화
+    normalize_transform = torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    x = normalize_transform(x)
+    return x
+
+def final_img_itransform(x):
+    '''
+    the function for post-processing. 
+    '''
+    # 이미지를 원본 크기로 업샘플링
+    upsample_transform = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+    x = upsample_transform(x)
+    return x
