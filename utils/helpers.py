@@ -11,7 +11,9 @@ def exists(val):
         val ( ): input.
     
     Outputs:
-        val ( ): True / False
+        Outputs:
+        if val exists >> return val. 
+        if val not exists >> return None. 
     '''
     return val is not None
 
@@ -95,10 +97,10 @@ def init_img_transform(x):
     '''
     the function for pre-processing. 
     '''
-    # 이미지를 256x256 크기로 조정
+    # resize image to 256x256. 
     resize_transform = torchvision.transforms.Resize((256, 256))
     x = resize_transform(x)
-    # 이미지 정규화
+    # normalize the image. 
     normalize_transform = torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     x = normalize_transform(x)
     return x
@@ -107,7 +109,7 @@ def final_img_itransform(x):
     '''
     the function for post-processing. 
     '''
-    # 이미지를 원본 크기로 업샘플링
+    # upsampling the image to original size. 
     upsample_transform = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
     x = upsample_transform(x)
     return x
