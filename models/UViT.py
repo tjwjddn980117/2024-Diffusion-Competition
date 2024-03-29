@@ -40,11 +40,11 @@ class UViT(nn.Module):
             dual_patchnorm (bool): normalizing with LayerNorm while doing patch.
         
         Inputs: 
-            x (tensor): [B,C,H,W].
-            time (tensor): [L]. the lenght of tensor.
+            x (tensor): [B, C, H, W].
+            time (tensor): [B]. the lenght of tensor.
 
         Outputs: 
-
+            x (tensor): [B, C, H, W]. 
         '''
         super(UViT).__init__()
 
@@ -219,5 +219,6 @@ class UViT(nn.Module):
         x = self.final_res_block(x, t)
         x = self.final_conv(x)
 
+        # if, need patch == true, unpatchify make the channel to 3. 
         x = self.unpatchify(x)
         return self.final_img_itransform(x)
