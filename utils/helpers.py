@@ -1,4 +1,5 @@
 from torch import nn
+import math
 import torch.nn.functional as F
 import torchvision
 
@@ -92,6 +93,59 @@ def l2norm(t):
         return F.normalize(t, dim = -1).
     '''
     return F.normalize(t, dim = -1)
+
+def num_to_groups(num, divisor):
+    '''
+    Example:
+        Input: num = 10, divisor = 3.
+        Ouputs: [3, 3, 3, 1].
+
+    Inputs:
+        num (int): total nums.
+        divisor (int): each num for group.
+    
+    Outputs:
+        arr (arr): devided arr.
+    '''
+    groups = num // divisor
+    remainder = num % divisor
+    arr = [divisor] * groups
+    if remainder > 0:
+        arr.append(remainder)
+    return arr
+
+def cycle(dl):
+    '''
+    Inputs:
+        dl (list): [data1, data2, data3, ...]
+    
+    Returns:
+        data1, data2,... you have to next(cycle(dl)) for work on. 
+    '''
+    while True:
+        for data in dl:
+            yield data
+
+def divisible_by(numer, denom):
+    '''
+    check the number can devide. 
+    Inputs
+    return (numer % denom) == 0
+    '''
+    return (numer % denom) == 0
+
+def has_int_squareroot(num):
+    '''
+    check the 'number' can 'root'. 
+
+    Inputs:
+        num (int): check it could be. 
+    
+    Returns:
+        _ (bool): check it could be. 
+    '''
+    root = math.sqrt(num)
+    return root.is_integer()
 
 def init_img_transform(x):
     '''
