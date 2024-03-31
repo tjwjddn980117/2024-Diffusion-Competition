@@ -37,7 +37,7 @@ class Upsample(nn.Module):
 
     def init_conv_(self, conv):
         '''
-        Initing weight with [B, C, H, W]
+        Initing weight with [B, C, H, W]. 
         '''
         o, i, h, w = conv.weight.shape
         conv_weight = torch.empty(o // self.factor_squared, i, h, w)
@@ -59,9 +59,9 @@ def Downsample(dim, dim_out = None, factor = 2):
         factor (int): upsampling size. you can think about the size.
     
     Outputs:
-        nn.Sequential(Rearrange[b,c,2h,2w]->[b,4c,h,w] -> nn.Conv2d)
-        input: [b,c,2h,2w]
-        output:[b,4c,h,w]
+        nn.Sequential(Rearrange[B, C, 2H, 2W]->[B, 4C, H, W] -> nn.Conv2d)
+        input: [B, C, 2H, 2W]
+        output:[B, 4C, H, W]
     '''
     return nn.Sequential(
         Rearrange('b c (h p1) (w p2) -> b (c p1 p2) h w', p1 = factor, p2 = factor),
@@ -79,11 +79,11 @@ class RMSNorm(nn.Module):
             normalize_dim (int): defualt is 2. the dimension that you want to normalize.
         
         Inputs:
-           x (tensor): [B, C, H, W]
+           x (tensor): [B, C, H, W]. 
         
         Outputs:
-            if scale=True, x (tensor): [B, C, H, W]
-            if scale=False, x (tensor): [B, C, H, W]
+            if scale=True, x (tensor): [B, C, H, W]. 
+            if scale=False, x (tensor): [B, C, H, W]. 
         '''
         super(RMSNorm).__init__()
         self.g = nn.Parameter(torch.ones(dim)) if scale else 1
