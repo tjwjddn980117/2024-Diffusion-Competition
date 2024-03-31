@@ -6,26 +6,26 @@ from functools import wraps
 def normalize_to_neg_one_to_one(img):
     '''
     If the image is normalized between 0.0 and 1.0, 
-    this function converts all pixel values to a range between -1 and 1.
+    this function converts all pixel values to a range between -1 and 1. 
 
     Inputs:
-        img (tensor): [B, C, H, W] (0.0 ~ 1.0)
+        img (tensor): [B, C, H, W] (0.0 ~ 1.0). 
     
     Outputs:
-        img (tensor): [B, C, H, W] (-1.0 ~ 1.0)
+        img (tensor): [B, C, H, W] (-1.0 ~ 1.0). 
     '''
     return img * 2 - 1
 
 def unnormalize_to_zero_to_one(t):
     '''
     If the input is normalized between -1.0 and 1.0, 
-    this function converts all values to a range between 0 and 1.
+    this function converts all values to a range between 0 and 1. 
     
     Inputs:
-        t (tensor): (-1.0 ~ 1.0)
+        t (tensor): (-1.0 ~ 1.0). 
 
     Outputs:
-        t (tensor): (0.0 ~ 1.0)
+        t (tensor): (0.0 ~ 1.0). 
     '''
     return (t + 1) * 0.5
 
@@ -38,7 +38,7 @@ def right_pad_dims_to(x, t):
     else, reshape t. 
 
     ex)
-    x.shape = [3,5,4,4], t.shape = [2,2].
+    x.shape = [3,5,4,4], t.shape = [2,2]. 
     then, t.shape [2,2] -> [2,2,1,1]. 
 
     Inputs:
@@ -46,7 +46,7 @@ def right_pad_dims_to(x, t):
         t (tensor): the dimension should bigger or same than x. 
     
     Outputs:
-        if t.ndim >= x.ndim, return t.  
+        if t.ndim >= x.ndim, return t. 
         if t.ndim < x.ndim, return t (with resizing). 
     '''
     padding_dims = x.ndim - t.ndim
@@ -60,7 +60,7 @@ def right_pad_dims_to(x, t):
 def log(t, eps = 1e-20):
     '''
     It is used to prevent this, 
-    since the entry of a zero or negative number into the function can return an infinite or NaN value.
+    since the entry of a zero or negative number into the function can return an infinite or NaN value. 
 
     Inputs:
         t (tensor): input tensor. 
@@ -74,7 +74,7 @@ def log(t, eps = 1e-20):
 def logsnr_schedule_cosine(t, logsnr_min = -15, logsnr_max = 15):
     '''
     This function computes log SNR using cosine schedules for a given time t. 
-    These kinds of schedules can be used in deep learning for training rate scheduling or time-dependent adjustments of other parameters.
+    These kinds of schedules can be used in deep learning for training rate scheduling or time-dependent adjustments of other parameters. 
 
     Inputs:
         t (tensor): [ _ ]. input tensor. The tensor should 'zero dimension'. ex) torch.tensor(0.28). 
@@ -93,9 +93,9 @@ def logsnr_schedule_shifted(fn, image_d, noise_d):
     the function for shifted with time serise. 
 
     Inputs:
-        fn (function): the function for logsnr.
+        fn (function): the function for logsnr. 
         imgae_d (int): dimension of image. 
-        noise_d (float): noise image.
+        noise_d (float): noise image. 
 
     Outputs:
         [ _ ] (tensor): fn(*args, **kwargs) + shift. 
