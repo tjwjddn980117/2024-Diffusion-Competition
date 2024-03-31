@@ -42,13 +42,13 @@ class FIDEvaluation:
 
     def calculate_inception_features(self, samples):
         '''
-        calcuate inception's features.
+        calcuate inception's features. 
 
         Inputs:
-            samples (tensor): [B, C, size, size]
+            samples (tensor): [B, C, size, size]. 
         
         Outputs:
-            features (tensor): [B, C]
+            features (tensor): [B, C]. 
         '''
         if self.channels == 1:
             # if channels are 1, it might be Gray-scale. so, we have to change for 3.
@@ -74,7 +74,7 @@ class FIDEvaluation:
             _ 
         
         Outputs:
-            _ (npz): save with m1, m2. this is the real_samples.
+            _ (npz): save with m1, m2. this is the real_samples. 
 
         '''
         path = os.path.join(self.stats_dir, "dataset_stats")
@@ -111,7 +111,7 @@ class FIDEvaluation:
     def fid_score(self):
         '''
         Outputs:
-            calculate_frechet_distance(m1, s1, self.m2, self.s2) : m1, s2 >> fake_features, m2, s2 >> real_features.
+            calculate_frechet_distance(m1, s1, self.m2, self.s2) : m1, s2 >> fake_features, m2, s2 >> real_features. 
         '''
         if not self.dataset_stats_loaded:
             self.load_or_precalc_dataset_stats()
