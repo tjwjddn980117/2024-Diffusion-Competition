@@ -17,10 +17,10 @@ class LinearAttention(nn.Module):
             dim_head (int): the number of dimensions of each head. 
         
         Inputs:
-            x (tensor): [B, dim, H, W]
+            x (tensor): [B, dim, H, W]. 
         
         Outpus:
-            x (tensor): [B, dim, H, W]
+            x (tensor): [B, dim, H, W]. 
         '''
         super(LinearAttention).__init__()
         self.scale = dim_head ** -0.5
@@ -126,7 +126,7 @@ class FeedForward(nn.Module):
         Arguments:
             dim (int): the number of dimension.
             cond_dim (int): the number of conditional dimension. 
-            mult (int): making the 'dim_hidden' with (dim_hidden = dim * mult)
+            mult (int): making the 'dim_hidden' with (dim_hidden = dim * mult). 
             dropout (int): parammeter of dropouts. 
 
         Inputs:
