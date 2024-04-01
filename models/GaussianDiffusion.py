@@ -29,6 +29,13 @@ class GaussianDiffusion(nn.Module):
             noise_d_low ( ): if noise_d_low and noise_d_high is exist, noise_schedule should be 'logsnr_schedule_interpolated'. 
             noise_d_high ( ): noise_d_low and noise_d_high is exist, noise_schedule should be 'logsnr_schedule_interpolated'. 
         
+        Inputs:
+            img (tensor): [B, C, H, W]. 
+            noise ( ): to define default noise. 
+        
+        Returns:
+            _ (float): (loss * loss_weight).mean(). It's the value of p_loss. 
+        
         '''
         
         super(GaussianDiffusion).__init__()
@@ -70,6 +77,18 @@ class GaussianDiffusion(nn.Module):
 
     @property
     def device(self):
+        '''
+        The device properties of the Gaussian class are used to determine which devices (such as CPUs or CUDA devices)
+         are currently assigned the model that an instance of that class has. 
+        
+        using example: 
+            # Identifying Devices with Current Gausian Models. \n
+            current_device = gaussian_model.device \n
+            print(f"The model is on {current_device}") \n
+
+            # Move data to the same device as the model. \n
+            input_data = input_data.to(gaussian_model.device)
+        '''
         return next(self.model.parameters()).device
 
     def p_mean_variance(self, x, time, time_next):
@@ -180,7 +199,7 @@ class GaussianDiffusion(nn.Module):
         Arguments:
             batch_size (int): the number of batch size. 
         
-        return:
+        Returns:
             img (tensor): [B, C, H, W]. 
         '''
         return self.p_sample_loop((batch_size, self.channels, self.image_size, self.image_size))
@@ -193,10 +212,12 @@ class GaussianDiffusion(nn.Module):
 
         Arguments:
             x_start (tensor): [B, C, H, W]. the start x. 
-            times (float): noise time. 
+            times (tensor): [B]. random times. 
+            noise ( ): to define default noise. 
         
         Returns:
             x_noised (tensor): [B, C, H, W]. the tensor with noise. 
+            log_snr ((tensor)): [B]. the value only effected by 'times'. 
         '''
         noise = default(noise, lambda: torch.randn_like(x_start))
 
@@ -209,14 +230,32 @@ class GaussianDiffusion(nn.Module):
         return x_noised, log_snr
 
     def p_losses(self, x_start, times, noise = None):
+        '''
+        the loss of de_noise process. 
+        q_sample for time is random time. 
+
+        Arguments:
+            x_start (tensor): [B, C, H, W]. the start x. 
+            times (tensor): [B]. random times. 
+            noise ( ): to define default noise. 
+        
+        Returns:
+            _ (float): (loss * loss_weight).mean(). loss = [B]. loss_weight = [B]. 
+        '''
+        # random noise. 
         noise = default(noise, lambda: torch.randn_like(x_start))
 
+        # q_sample for make random 'log_snr' for random time. and noised with random time 'log_snr'. 
         x, log_snr = self.q_sample(x_start = x_start, times = times, noise = noise)
+
+        # model_out is the prediction of denoise - predict image. timing of (t - 1). 
         model_out = self.model(x, log_snr)
 
         if self.pred_objective == 'v':
             padded_log_snr = right_pad_dims_to(x, log_snr)
             alpha, sigma = padded_log_snr.sigmoid().sqrt(), (-padded_log_snr).sigmoid().sqrt()
+            # it just the target that time of (t - 1). 
+            # i don't know what's the reason why it's exactly, but it says it can be. 
             target = alpha * noise - sigma * x_start
 
         elif self.pred_objective == 'eps':
@@ -225,6 +264,7 @@ class GaussianDiffusion(nn.Module):
         loss = F.mse_loss(model_out, target, reduction = 'none')
 
         loss = reduce(loss, 'b ... -> b', 'mean')
+        # loss = [B]
 
         snr = log_snr.exp()
 
@@ -234,17 +274,21 @@ class GaussianDiffusion(nn.Module):
 
         if self.pred_objective == 'v':
             loss_weight = maybe_clip_snr / (snr + 1)
-
         elif self.pred_objective == 'eps':
             loss_weight = maybe_clip_snr / snr
-
+        # loss_weight = [B]
+        
         return (loss * loss_weight).mean()
     
     def forward(self, img, *args, **kwargs):
+        '''
+        the reason that the forward has only 'p_losses' is the forward only 'noising process'. 
+        '''
         b, c, h, w, device, img_size, = *img.shape, img.device, self.image_size
         assert h == img_size and w == img_size, f'height and width of image must be {img_size}'
 
         img = normalize_to_neg_one_to_one(img)
+        # times = [B]. Fill in with random values that follow an even distribution between 0 and 1. 
         times = torch.zeros((img.shape[0],), device = self.device).float().uniform_(0, 1)
 
         return self.p_losses(img, times, *args, **kwargs)
