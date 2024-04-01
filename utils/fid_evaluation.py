@@ -12,18 +12,8 @@ from tqdm.auto import tqdm
 from helpers import num_to_groups
 
 class FIDEvaluation:
-    def __init__(
-        self,
-        batch_size,
-        dl,
-        sampler,
-        channels=3,
-        accelerator=None,
-        stats_dir="./results",
-        device="cuda",
-        num_fid_samples=50000,
-        inception_block_idx=2048,
-    ):
+    def __init__( self, batch_size, dl, sampler, channels=3, accelerator=None, stats_dir="./results",
+                 device="cuda", num_fid_samples=50000, inception_block_idx=2048, ):
         self.batch_size = batch_size
         self.n_samples = num_fid_samples
         self.device = device
