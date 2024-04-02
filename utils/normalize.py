@@ -77,12 +77,12 @@ def logsnr_schedule_cosine(t, logsnr_min = -15, logsnr_max = 15):
     These kinds of schedules can be used in deep learning for training rate scheduling or time-dependent adjustments of other parameters. 
 
     Inputs:
-        t (tensor): [ _ ]. input tensor. The tensor should 'zero dimension'. ex) torch.tensor(0.28). 
+        t (tensor): [ _ ] / [B]. input tensor. The tensor should 'zero dimension'. ex) torch.tensor(0.28). 
         logsnr_min (int): the minimum number of logsnr. 
         logsnr_max (int): the maximum number of logsnr. 
     
     Outputs:
-        [ _ ] (tensor): -2 * log(torch.tan(t_min + t * (t_max - t_min))). it's safe tensor. 
+        [ _ ] / [B] (tensor): -2 * log(torch.tan(t_min + t * (t_max - t_min))). it's safe tensor. 
     '''
     t_min = math.atan(math.exp(-0.5 * logsnr_max))
     t_max = math.atan(math.exp(-0.5 * logsnr_min))
@@ -98,7 +98,7 @@ def logsnr_schedule_shifted(fn, image_d, noise_d):
         noise_d (float): noise image. 
 
     Outputs:
-        [ _ ] (tensor): fn(*args, **kwargs) + shift. 
+        [ _ ] / [B] (tensor): fn(*args, **kwargs) + shift. 
     '''
     shift = 2 * math.log(noise_d / image_d)
     @wraps(fn)
@@ -118,7 +118,7 @@ def logsnr_schedule_interpolated(fn, image_d, noise_d_low, noise_d_high):
         noise_d_high (tensor): noise image with high time. 
     
     Outputs:
-        [ _ ] (tensor): t * logsnr_low_fn(t, *args, **kwargs) + (1 - t) * logsnr_high_fn(t, *args, **kwargs). 
+        [ _ ] / [B] (tensor): t * logsnr_low_fn(t, *args, **kwargs) + (1 - t) * logsnr_high_fn(t, *args, **kwargs). 
     '''
     logsnr_low_fn = logsnr_schedule_shifted(fn, image_d, noise_d_low)
     logsnr_high_fn = logsnr_schedule_shifted(fn, image_d, noise_d_high)
