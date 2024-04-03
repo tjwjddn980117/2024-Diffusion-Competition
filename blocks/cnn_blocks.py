@@ -6,9 +6,9 @@ class Block(nn.Module):
     def __init__(self, dim, dim_out, groups = 8):
         '''
         Arguments:
-            dim (int): number of dimension.
-            dim_out (int): number of out dimension. 
-            groups (int): standard with grouping channels for group normalize. 
+                dim (int): number of dimension.
+                dim_out (int): number of out dimension. 
+                groups (int): standard with grouping channels for group normalize. 
 
         Inputs:
             x (tensor): [b, dim, h, w]. 
