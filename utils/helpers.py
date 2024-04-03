@@ -152,6 +152,23 @@ def has_int_squareroot(num):
     root = math.sqrt(num)
     return root.is_integer()
 
+def convert_image_to_fn(img_type, image):
+    '''
+    if image type is same with img_type, return image.
+    if image type is different with img_type, convert image type with 'img_type'.
+
+    Inputs:
+        img_type (List): possible types of images. 
+        image (Image): the input images. 
+    
+    Returns:
+        image (Image): the image with convert image type. 
+    '''
+    if image.mode != img_type:
+        return image.convert(img_type)
+    return image
+
+
 def init_img_transform(x):
     '''
     the function for pre-processing. 
