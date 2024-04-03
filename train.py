@@ -1,4 +1,3 @@
-from PIL import Image
 from tqdm.auto import tqdm
 from ema_pytorch import EMA
 from accelerate import Accelerator
@@ -9,7 +8,7 @@ from pathlib import Path
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torch.optim import Adam
-from torchvision import transforms as T, utils
+from torchvision import transforms as utils
 
 from utils.helpers import *
 from utils.fid_evaluation import FIDEvaluation
