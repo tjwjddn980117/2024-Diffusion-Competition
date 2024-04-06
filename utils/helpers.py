@@ -20,7 +20,7 @@ def exists(val):
 
 def identity(t):
     '''
-    Reinfore the parammeter. 
+    For alter function. the fuction call it self. 
     
     Inputs:
         t ( ): input. 
@@ -47,8 +47,8 @@ def default(val, d):
     choose the default function. 
 
     Inputs:
-        val ( ):
-        d ( ): 
+        val ( ): exist. 
+        d ( ): alter. 
     
     Outputs:
         if val exists >> return val. 
