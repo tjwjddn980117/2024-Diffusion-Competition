@@ -1,0 +1,3 @@
+matplotlib.pyplot conda install conda-forge::matplotlib
+pandas conda install conda-forge::pandas
+torchvisioin
