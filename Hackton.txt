@@ -1,3 +1,7 @@
 matplotlib.pyplot conda install conda-forge::matplotlib
 pandas conda install conda-forge::pandas
 torchvisioin
+conda install conda-forge::scikit-plot
+seaborn
+conda install anaconda::scikit-learn
+pip install wandb
