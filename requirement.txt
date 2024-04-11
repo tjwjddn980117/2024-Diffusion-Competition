@@ -4,3 +4,4 @@ tqdm
 ema-pytorch
 accelerate
 pytorch-fid
+conda install anaconda::scikit-learn
