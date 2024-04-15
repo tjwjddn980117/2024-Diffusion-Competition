@@ -18,6 +18,22 @@ class Dataset(Dataset):
         augment_horizontal_flip = False,
         convert_image_to = None
     ):
+        '''
+        the class for Datasets.
+
+        Arguments:
+            folder (str): the path about datasets. 
+            image_size (int): the size of image. 
+            exts (list([str])): supported type of image. 
+            augment_horizontal_flip (bool): choose the horizontal flip of image. 
+            convert_image_to (function): the function for convert image type. 
+
+        Inputs:
+            index (int): the index of image. 
+        
+        Outputs:
+            img (Image): a single image with tranform. 
+        '''
         super(Dataset).__init__()
         self.folder = folder
         self.image_size = image_size
