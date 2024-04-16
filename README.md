@@ -23,3 +23,4 @@ diffusion에 대한 코드들:
 PowerBi 데이터 전처리 코드:
  - 'powerbi_code_data_processing' 폴더에 이상치와 결측치를 제거하고, 행들의 이름이 달랐던 데이터들을 바로잡았다. 
  - pre-processed data https://drive.google.com/drive/folders/1TwQoqdR5j35k6BXhk3fdBO3ICI-3PrTo?usp=drive_link
+
